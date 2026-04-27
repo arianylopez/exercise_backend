@@ -1,0 +1,13 @@
+"Seq Scan on film_work  (cost=0.00..152.43 rows=7 width=710) (actual time=0.019..1.485 rows=1005 loops=1)"
+"  Filter: (creation_date = '2020-01-01'::date)"
+"  Rows Removed by Filter: 8995"
+"Planning Time: 49.786 ms"
+"Execution Time: 1.551 ms"
+
+"Bitmap Heap Scan on film_work  (cost=20.07..166.64 rows=1005 width=76) (actual time=3.330..3.629 rows=1005 loops=1)"
+"  Recheck Cond: (creation_date = '2020-01-01'::date)"
+"  Heap Blocks: exact=134"
+"  ->  Bitmap Index Scan on film_work_creation_date_idx  (cost=0.00..19.82 rows=1005 width=0) (actual time=3.296..3.296 rows=1005 loops=1)"
+"        Index Cond: (creation_date = '2020-01-01'::date)"
+"Planning Time: 5.571 ms"
+"Execution Time: 3.737 ms"
