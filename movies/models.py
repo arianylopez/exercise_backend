@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.translation import gettext_lazy as _
 
 class TimeStampedMixin(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -16,8 +17,8 @@ class UUIDMixin(models.Model):
         abstract = True
 
 class Genre(UUIDMixin, TimeStampedMixin):
-    name = models.CharField('name', max_length=255)
-    description = models.TextField('description', blank=True)
+    name = models.CharField(_('name'), max_length=255)
+    description = models.TextField(_('description'), blank=True)
 
     class Meta:
         db_table = "content\".\"genre"
@@ -32,13 +33,13 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
         MOVIE = 'movie', 'Película'
         TV_SHOW = 'tv_show', 'Serie de TV'
     
-    title = models.CharField('title', max_length=255)
-    description = models.CharField('description', max_length=255)
-    creation_date = models.DateField('creation_date', blank=True, null=True)
-    rating = models.FloatField('rating', blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    type = models.CharField('type', choices=Type.choices)
-    certificate = models.CharField('certificate', max_length=255, blank=True)
-    file_path = models.FileField('file_path', upload_to='movies/', blank=True, null=True)
+    title = models.CharField(_('title'), max_length=255)
+    description = models.CharField(_('description'), max_length=255)
+    creation_date = models.DateField(_('creation_date'), blank=True, null=True)
+    rating = models.FloatField(_('rating'), blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    type = models.CharField(_('type'), choices=Type.choices)
+    certificate = models.CharField(_('certificate'), max_length=512, blank=True)
+    file_path = models.FileField(_('file'), blank=True, null=True, upload_to='movies/')
 
     genres = models.ManyToManyField(Genre, through='GenreFilmWork')
     persons = models.ManyToManyField('Person', through='PersonFilmWork')
@@ -52,7 +53,7 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
         return self.title
     
 class Person(UUIDMixin, TimeStampedMixin):
-    full_name = models.CharField('full_name', max_length=256)
+    full_name = models.CharField(_('full_name'), max_length=256)
 
     class Meta:
         db_table = "content\".\"person"
@@ -69,12 +70,14 @@ class GenreFilmWork(UUIDMixin, TimeStampedMixin):
 
     class Meta:
         db_table = "content\".\"genre_film_work"
-        constraints = [models.UniqueConstraint(fields=['film_work', 'genre'], name='unique_film_work_genre')]
+        constraints = [
+            models.UniqueConstraint(fields=['film_work', 'genre'], name='unique_film_work_genre')
+        ]
 
 class PersonFilmWork(UUIDMixin, TimeStampedMixin):
     film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    role = models.CharField('role', max_length=255)
+    role = models.CharField(_('role'), max_length=255)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
