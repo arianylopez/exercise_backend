@@ -1,14 +1,15 @@
 FROM python:3.12-slim
+
+RUN groupadd -r web && useradd -r -g web web
 WORKDIR /opt/app
 ENV DJANGO_SETTINGS_MODULE 'config.settings'
 
-COPY requirements.txt requirements.txt
-COPY run_uwsgi.sh run_uwsgi.sh
-COPY uwsgi/uwsgi.ini uwsgi.ini
-
-RUN pip install --upgrade pip  \
+COPY requirements.txt .
+RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-COPY . .
+COPY --chown=web:web . .
+USER web
 EXPOSE 8000
-CMD ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
+
+ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi/uwsgi.ini"]
