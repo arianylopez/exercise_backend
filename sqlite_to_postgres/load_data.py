@@ -9,10 +9,14 @@ from models import Genre, FilmWork, Person, GenreFilmWork, PersonFilmWork
 from sqlite_extractor import SQLiteExtractor
 from postgres_saver import PostgresSaver
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') # QUE ES ESTO
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-load_dotenv(dotenv_path='../config/.env')
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)
+
+dotenv_path = os.path.join(BASE_DIR, 'config', '.env')
+load_dotenv(dotenv_path=dotenv_path)
 
 def load_from_sqlite(connection: sqlite3.Connection, pg_conn: psycopg2.extensions.connection):
     postgres_saver = PostgresSaver(pg_conn)
@@ -56,7 +60,7 @@ if __name__ == '__main__':
         'port': os.environ.get('DB_PORT', '5432')
     }
 
-    sqlite_db_path = '../db.sqlite'
+    sqlite_db_path = os.path.join(BASE_DIR, 'db.sqlite')
 
     try:
         with sqlite3.connect(sqlite_db_path) as sqlite_conn, psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
