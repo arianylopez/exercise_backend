@@ -3,7 +3,7 @@ services:
     image: postgres:16
     container_name: postgres
     ports:
-      - "5432:5432"
+      - "5432:5432" # NO exponer puertos 
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -28,7 +28,7 @@ services:
       - ./config/.env
     environment:
       - DB_HOST=db
-      - DB_PORT=5432
+      - DB_PORT=5432 # Agregar variables de entorno
     ports:
       - "8000:8000"
 
